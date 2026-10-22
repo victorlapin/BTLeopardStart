@@ -2,7 +2,7 @@
   "Name": "BTLeopardStart",
   "Enabled": true,
   "Hidden": true,
-  "Version": "0.1.0",
+  "Version": "0.1.3",
   "Description": "Career mode starts on a Leopard dropship; the Argo is earned through play.",
   "Author": "Victor Lapin",
   "Website": "",
