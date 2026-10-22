@@ -10,13 +10,18 @@ The game's `CurDropship` (Leopard vs Argo) is cosmetic-only for gameplay
 systems (mech bays, berths and upgrades are stat-driven). Everything in this
 mod rides on native mechanics:
 
-1. **Harmony postfix** on `SimGameState._OnFirstPlayInit` switches the career
-   starting ship via the native `SetSimShip()` and sets a company tag:
-   `current_ship_leopard` (or `current_ship_argo` for vanilla behavior).
-   The tag prefix is configurable.
-2. **Ship tags are mutually exclusive.** `SetShipTag()` removes every
-   `current_ship_*` tag before adding the new one, which keeps the system
-   extensible for a future `current_ship_union`.
+1. **Harmony postfix** on `SimGameState._OnAttachUXComplete` switches the
+   career starting ship via the native `SetSimShip()`. This is the only safe
+   hook: the game sets the career ship to Argo inside that same method (an
+   earlier hook gets overwritten), and `SetSimShip` needs `SpaceController`,
+   which does not exist until the sim scene loads (an earlier hook NREs).
+2. **Tag sync** — a postfix on `SetSimShip` itself is the single authority for
+   the mutually exclusive `current_ship_*` company tags (prefix configurable).
+   Every code path — native init, any `System_SetDropship` action from any
+   event or mod (the Argo-recovery flashpoints use it), and every save load
+   (the game re-asserts the persisted ship there, so stale tags self-heal) —
+   re-syncs the tag to the actual ship. Keeps the system extensible for a
+   future `current_ship_union`.
 3. **Engineering is closed on the Leopard — natively, with zero overrides.**
    Room visibility is driven by the `DropshipLocation` flag masks in the game
    code: `DS_LEOPARD = 119` does not include the `ENGINEERING` bit, so the
@@ -67,7 +72,7 @@ and the Farah flyout opens a conversation, not the upgrade screen.
       field check pending)
 - [ ] Integrate the transition: pull dogfisc's flashpoint chain (3 linked FPs
       to recover the Argo) into the pack; verify on game 1.9.1
-- [ ] Tag sync on external ship switches: postfix on `SetSimShip` so that any
+- [x] Tag sync on external ship switches: postfix on `SetSimShip` so that any
       `System_SetDropship` action (the FPs use it) keeps `current_ship_*`
       consistent — without this the tags go stale after the FP chain
 - [ ] Field test: new career on Leopard; tags in save; engineering
