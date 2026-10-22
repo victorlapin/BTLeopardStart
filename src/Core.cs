@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Reflection;
 using HarmonyLib;
 using Newtonsoft.Json;
@@ -48,5 +49,10 @@ namespace BTLeopardStart
         /// Setting one clears the others (handled by transition events).
         /// Upgrade defs gate on the ship they require (e.g. "current_ship_argo").</summary>
         public string ShipTagPrefix = "current_ship";
+
+        /// <summary>Flashpoints that spawn on the eligible system nearest to the player
+        /// instead of a random eligible system anywhere on the map (the Argo-recovery
+        /// chain). Empty = placement untouched.</summary>
+        public List<string> FlashpointIds = new List<string>();
     }
 }

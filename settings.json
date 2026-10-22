@@ -1,4 +1,9 @@
 {
   "StartShip": "Leopard",
-  "ShipTagPrefix": "current_ship"
+  "ShipTagPrefix": "current_ship",
+  "FlashpointIds": [
+    "fp_TA1_DiggingintheDirt",
+    "fp_TA2_ResearchAssistant",
+    "fp_TA3_RecovertheArgo"
+  ]
 }

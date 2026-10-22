@@ -72,6 +72,13 @@ and the Farah flyout opens a conversation, not the upgrade screen.
       field check pending)
 - [ ] Integrate the transition: pull dogfisc's flashpoint chain (3 linked FPs
       to recover the Argo) into the pack; verify on game 1.9.1
+- [x] Flashpoint placement: flashpoints listed in `FlashpointIds` (the Argo
+      chain) spawn on the eligible system nearest to the player — vanilla picks
+      a random eligible system from the whole map with no distance filter.
+      Implemented as a prefix on the `Flashpoint` constructor (the first point
+      where the def is chosen while the system is still swappable); eligibility
+      reuses the def's `LocationRequirements` plus the no-two-flashpoints-per-
+      system rule
 - [x] Tag sync on external ship switches: postfix on `SetSimShip` so that any
       `System_SetDropship` action (the FPs use it) keeps `current_ship_*`
       consistent — without this the tags go stale after the FP chain
