@@ -6,7 +6,7 @@ using HarmonyLib;
 using HBS.Logging;
 using Newtonsoft.Json;
 
-[assembly: AssemblyVersion("0.1.3")]
+[assembly: AssemblyVersion("0.1.4")]
 
 namespace BTLeopardStart
 {

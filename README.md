@@ -68,13 +68,12 @@ into the entry-point settings, so the mod reads the file itself).
 
 ## Known issues
 
-- **Flashpoint graphics glitch** (reported by the 2020 "Career Leopard Start"
-  mod): after a flashpoint conversation, Leopard room graphics may be overlaid
-  by planet graphics. Cosmetic; cleared by loading a save. Reproduce, then
-  patch or document. Doubly relevant now that the transition rides on
-  flashpoints.
-- Vanilla events freely say "Argo" in their texts. The game has no way to make
-  the ship name a variable; see the roadmap for the event-audit pass.
+None currently. The two historical ones are resolved and documented in the
+roadmap: the flashpoint conversation glitch (fixed in v0.1.4) and Argo-flavored
+event texts (audit complete — gated, reworded, or verified self-gating across
+BTVL Vanilla Events, BT Advanced Events and the other event mods; the ship name
+itself cannot be an engine variable, so a few cosmetic "Argo" mentions remain
+only in events that fire post-Argo anyway).
 
 ## Roadmap
 
@@ -98,10 +97,22 @@ into the entry-point settings, so the mod reads the file itself).
       `System_SetDropship` action (the FPs use it) keeps `current_ship_*`
       consistent — without this the tags go stale after the FP chain
 - [ ] Field test, remaining: TA1 combat (lance composition, difficulty feel);
-      FP conversation graphics glitch; Axylus finale → Argo transition;
-      save/load round-trip after the transition. Verified so far: Leopard
-      start + tags, engineering unreachable, flashpoint placement
-- [ ] Flashpoint glitch: reproduce, root-cause, patch or document
+      Axylus finale → Argo transition; save/load round-trip after the
+      transition. Verified so far: Leopard start + tags, engineering
+      unreachable, flashpoint placement, conversation-exit fix
+- [x] Flashpoint conversation glitch: fixed in v0.1.4 and field-verified.
+      Three layers, all Leopard-only: (1) the CONFERENCE room (128) is not in
+      the Leopard's room mask (DS_LEOPARD = 119) — entering it broke the
+      scene (planet graphics over rooms); conversation entry is now
+      redirected to the Command Center via RoomManager.ChangeRoom +
+      CameraController.SetScene (ChangeRoom alone does not move the camera);
+      (2) conversation exits (raw Conference, Ship/Argo set by
+      ExtendedConversations for invalid/circular locations, or vanilla's
+      INVALID_UNSET fallback) all landed on the SHIP exterior view — now
+      redirected to the Command Center (Contract menu); (3) speaker-focus
+      camera moves during conversations ("Couldn't find the room!" spam —
+      the cast's camera anchors only exist in the Argo conference set) are
+      skipped entirely. Argo behavior untouched
 
 ### v0.2 — content
 - [x] Event audit (BTVL Vanilla Events, direct edits): 27 events from the
