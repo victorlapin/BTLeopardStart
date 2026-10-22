@@ -1,0 +1,57 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net472</TargetFramework>
+    <LangVersion>7.3</LangVersion>
+    <AssemblyName>BTLeopardStart</AssemblyName>
+    <RootNamespace>BTLeopardStart</RootNamespace>
+    <Nullable>disable</Nullable>
+    <EnableDefaultCompileItems>false</EnableDefaultCompileItems>
+    <EnableDefaultItems>false</EnableDefaultItems>
+    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+    <DebugType>none</DebugType>
+    <GenerateDocumentationFile>false</GenerateDocumentationFile>
+  </PropertyGroup>
+
+  <!-- Lets dotnet build target .NET Framework without installed targeting packs -->
+  <ItemGroup>
+    <PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies" Version="1.0.3" PrivateAssets="all" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="Assembly-CSharp">
+      <HintPath>$(ManagedDir)\Assembly-CSharp.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
+    <Reference Include="UnityEngine.CoreModule">
+      <HintPath>$(ManagedDir)\UnityEngine.CoreModule.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
+    <Reference Include="0Harmony">
+      <HintPath>$(ModsDir)\ModTek\lib\0Harmony.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
+    <Reference Include="Newtonsoft.Json">
+      <HintPath>$(ManagedDir)\Newtonsoft.Json.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Include="src\**\*.cs" />
+  </ItemGroup>
+
+  <!-- Deploy: copies DLL + mod.json + events to the Mods folder -->
+  <Target Name="Deploy" AfterTargets="Build" Condition="'$(DeployDir)' != ''">
+    <ItemGroup>
+      <ModManifest Include="$(MSBuildProjectDirectory)\mod.json" />
+      <ModSettings Include="$(MSBuildProjectDirectory)\settings.json" />
+    </ItemGroup>
+    <Copy SourceFiles="$(TargetPath)" DestinationFolder="$(DeployDir)" />
+    <Copy SourceFiles="@(ModManifest)" DestinationFolder="$(DeployDir)" />
+    <Copy SourceFiles="@(ModSettings)" DestinationFolder="$(DeployDir)"
+          Condition="!Exists('$(DeployDir)\settings.json')" />
+    <Message Importance="high" Text="Deployed $(TargetFileName) + data to $(DeployDir)" />
+  </Target>
+
+</Project>
