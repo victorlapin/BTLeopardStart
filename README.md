@@ -30,10 +30,14 @@ mod rides on native mechanics:
    their Argo-flavored texts are only ever shown on the Argo, where they are
    correct.
 
-The Argo transition itself is **not part of this mod** — the plan is to reuse
-the three linked flashpoints from the 2020 "Career Leopard Start" mod
-(dogfisc), which walk the crew through finding and recovering the Argo. No
-timers, no scripted purchase.
+The Argo transition itself is **not part of this mod** — it ships as the
+companion mod **"Flashpoint - Recover The Argo"** (from dogfisc's 2020
+"Career Leopard Start"), retuned for this pack: three linked flashpoints
+(difficulty 2/4/5) that walk the crew through finding and recovering the
+Argo, lance requests in pack vocabulary, no location pinning. That mod
+`DependsOn` this one: the `FlashpointIds` placement below keeps the chain
+within one jump of the player instead of anywhere on the 2888-system map.
+No timers, no scripted purchase.
 
 Verified compatible with **IRTweaks** `StreamlinedMainMenu`: its left-nav
 rework posts after vanilla gating (does not reactivate hidden buttons), its
@@ -47,10 +51,18 @@ and the Farah flyout opens a conversation, not the upgrade screen.
 
 ## Settings (`settings.json`)
 
+Read from the mod folder at load (ModTek 4.x does not merge `settings.json`
+into the entry-point settings, so the mod reads the file itself).
+
 ```jsonc
 {
   "StartShip": "Leopard",      // "Leopard" or "Argo" (Argo = vanilla behavior)
-  "ShipTagPrefix": "current_ship"
+  "ShipTagPrefix": "current_ship",
+  "FlashpointIds": [           // flashpoints placed in the system NEAREST to
+    "fp_TA1_DiggingintheDirt", // the player (never the current system) when
+    "fp_TA2_ResearchAssistant",// they generate; empty = vanilla placement
+    "fp_TA3_RecovertheArgo"    // (random eligible system map-wide)
+  ]
 }
 ```
 
@@ -68,34 +80,54 @@ and the Farah flyout opens a conversation, not the upgrade screen.
 
 ### v0.1 — release
 - [x] Core patch: start ship + mutually exclusive `current_ship_*` tags
-- [x] Verify engineering is natively closed on the Leopard (code audit done,
-      field check pending)
-- [ ] Integrate the transition: pull dogfisc's flashpoint chain (3 linked FPs
-      to recover the Argo) into the pack; verify on game 1.9.1
-- [x] Flashpoint placement: flashpoints listed in `FlashpointIds` (the Argo
-      chain) spawn on the eligible system nearest to the player — vanilla picks
-      a random eligible system from the whole map with no distance filter.
+- [x] Verify engineering is natively closed on the Leopard (code audit + field
+      check done)
+- [x] Integrate the transition: dogfisc's flashpoint chain added to the pack
+      as "Flashpoint - Recover The Argo"; retuned difficulty 2/4/5, lance
+      requests rewritten to pack vocabulary (the `dynamic_difficulty` tags had
+      zero matches in the lance pool), `LocationRequirements` emptied
+      (placement is this mod's job), dead `Repeatable` field dropped
+- [x] Flashpoint placement: flashpoints listed in `FlashpointIds` spawn on the
+      eligible system nearest to the player — never the player's current
+      system — instead of a random eligible system from the whole map.
       Implemented as a prefix on the `Flashpoint` constructor (the first point
       where the def is chosen while the system is still swappable); eligibility
       reuses the def's `LocationRequirements` plus the no-two-flashpoints-per-
-      system rule
+      system rule. Field-verified on game 1.9.1
 - [x] Tag sync on external ship switches: postfix on `SetSimShip` so that any
       `System_SetDropship` action (the FPs use it) keeps `current_ship_*`
       consistent — without this the tags go stale after the FP chain
-- [ ] Field test: new career on Leopard; tags in save; engineering
-      unreachable; CMD Staff → Farah cosmetics; FP chain completes → Argo +
-      engineering opens; save/load round-trip
+- [ ] Field test, remaining: TA1 combat (lance composition, difficulty feel);
+      FP conversation graphics glitch; Axylus finale → Argo transition;
+      save/load round-trip after the transition. Verified so far: Leopard
+      start + tags, engineering unreachable, flashpoint placement
 - [ ] Flashpoint glitch: reproduce, root-cause, patch or document
 
 ### v0.2 — content
-- [ ] Event audit: gate functionally Argo-dependent events behind
-      `ExcludedTags: current_ship_leopard` (ShouldAppend overrides over
-      BTVL Vanilla Events); cosmetic name mentions stay
-- [ ] MRB assessment event gating (decision pending)
-- [ ] Black market membership event gating (decision pending)
-- [ ] Optional: `StartMechTechs` / `StartMedTechs` overrides for a leaner
-      Leopard baseline (vanilla career constants assume the Argo; kept as-is
-      by default)
+- [x] Event audit (BTVL Vanilla Events, direct edits): 27 events from the
+      2020 mod's blocklist excluded on the Leopard via `current_ship_leopard`
+      (company-scope events: top-level ExclusionTags; mechwarrior-scope:
+      a Company-scope AdditionalRequirements entry — the MW block checks pilot
+      tags, not company tags); 7 events self-gate on ship-upgrade
+      requirements; 6 events reworded to ship-neutral texts ("the ship"
+      instead of "the Argo" — stays correct on both ships); 6 events clean
+      (Argo only mentioned inside upgrade-gated, hidden options)
+- [x] MRB / black market chain (BT Advanced Events): the chain ENTRY event
+      `event_sh_gate1` is gated with `current_ship_leopard` — the epsilon
+      authorization (and the black market access it grants) cannot start while
+      on the Leopard. The later `event_sh_gate1_assessment` keeps its original
+      Argo-referencing texts: it can only fire once the chain has started,
+      which is already post-Argo, so the texts are correct
+- [x] Starting MechTech/MedTech counts — decided: keep vanilla (Argo-baseline)
+      constants; the Leopard plays as a "cut-down Argo" stat-wise
+- [x] Arano Restoration chain (Flashpoint mod): `fp_StoryTime3` (Axylus /
+      "Capture the Scheria") gated behind `current_ship_argo`; the two d2
+      intro missions stay open from career start. The career port presumes the
+      player already owns the Argo — the Axylus briefing itself says the
+      *Scheria* is "a derelict similar to your Argo", and every later event
+      casually references the Argo as the player's ship. StoryTime3 is exactly
+      where those references begin, so the chain runs on the Leopard up to that
+      point at appropriate difficulty and pauses until the Argo is secured
 
 ### Backlog
 - [ ] Union dropship support (`current_ship_union`; shares Argo visuals)
