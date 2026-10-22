@@ -18,31 +18,35 @@ mod rides on native mechanics:
 2. **Tag sync** — a postfix on `SetSimShip` itself is the single authority for
    the mutually exclusive `current_ship_*` company tags (prefix configurable).
    Every code path — native init, any `System_SetDropship` action from any
-   event or mod (the Argo-recovery flashpoints use it), and every save load
-   (the game re-asserts the persisted ship there, so stale tags self-heal) —
-   re-syncs the tag to the actual ship. Keeps the system extensible for a
-   future `current_ship_union`.
+   event or mod, and every save load (the game re-asserts the persisted ship
+   there, so stale tags self-heal) — re-syncs the tag to the actual ship.
+   Keeps the system extensible for a potential future `current_ship_union`.
 3. **Engineering is closed on the Leopard — natively, with zero overrides.**
    Room visibility is driven by the `DropshipLocation` flag masks in the game
    code: `DS_LEOPARD = 119` does not include the `ENGINEERING` bit, so the
    left-nav button is hidden and the ship upgrade screen is unreachable while
-   `CurDropship == Leopard`. All 35 `ShipModuleUpgradeDef`s stay untouched;
-   their Argo-flavored texts are only ever shown on the Argo, where they are
-   correct.
+   `CurDropship == Leopard`. All vanilla `ShipModuleUpgradeDef`s stay
+   untouched; their Argo-flavored texts are only ever shown on the Argo, where
+   they are correct.
 
-The Argo transition itself is **not part of this mod** — it ships as the
-companion mod **"Flashpoint - Recover The Argo"** (from dogfisc's 2020
-"Career Leopard Start"), retuned for this pack: three linked flashpoints
-(difficulty 2/4/5) that walk the crew through finding and recovering the
-Argo, lance requests in pack vocabulary, no location pinning. That mod
-`DependsOn` this one: the `FlashpointIds` placement below keeps the chain
-within one jump of the player instead of anywhere on the 2888-system map.
-No timers, no scripted purchase.
+The Argo transition itself is **not part of this mod** — pair it with any
+content that calls the native `System_SetDropship` action (for example the
+three-flashpoint recovery chain from dogfisc's 2020 "Career Leopard Start").
+While a chain's flashpoint IDs are listed in `FlashpointIds`, this mod places
+each of them in the eligible system **nearest to the player** — vanilla picks
+a random eligible system from the whole map with no distance filter, which on
+large community maps (thousands of systems) can spawn the chain dozens of
+jumps away. No timers, no scripted purchase.
 
-Verified compatible with **IRTweaks** `StreamlinedMainMenu`: its left-nav
-rework posts after vanilla gating (does not reactivate hidden buttons), its
-new Store/CMD Staff/Memorial buttons use room IDs inside the Leopard mask,
-and the Farah flyout opens a conversation, not the upgrade screen.
+Compatibility with **IRTweaks** `StreamlinedMainMenu`: its left-nav rework
+posts after vanilla gating (does not reactivate hidden buttons) and its new
+Store/CMD Staff/Memorial buttons use room IDs inside the Leopard mask, so the
+upgrade screen stays unreachable. Note a separate, ship-agnostic IRTweaks bug:
+with default (non-instant) camera transitions the CMD Staff flyouts do not
+route — clicking any crew member (Yang, Sumire, Farah...) lands you in the
+Command Center with Darius, and no conversation starts (its queue branch
+re-queues the menu but never redirects navigation). Unrelated to this mod;
+fixable locally in IRTweaks.
 
 ## Requirements
 
@@ -66,83 +70,82 @@ into the entry-point settings, so the mod reads the file itself).
 }
 ```
 
+## Integrating into a modpack
+
+The `current_ship_*` company tags are a public integration surface — and there
+is integration work this mod deliberately does **not** do for you: your event
+mods know nothing about the Leopard phase and will happily fire with texts
+that presume the Argo. When wiring this mod into a modpack, audit your events:
+
+1. **Scan** your event mods for Argo references (search texts for `\bargo\b`,
+   case-insensitive; watch out for false positives inside "cargo"). Check
+   event bodies, option details and result texts — and remember that options
+   hidden behind upgrade requirements are invisible on the Leopard, so Argo
+   mentions that live *only* there need no work.
+2. **Check self-gating first.** Many Argo-facility events already require an
+   `argo_*` upgrade tag in `RequirementTags` — those upgrades can never exist
+   on the Leopard, so the events never fire. Leave them alone. This applies to
+   third-party mods too: verify before editing anything.
+3. **Gate functionally Argo-dependent events** (premise is an Argo facility —
+   hydroponics, lounge, library, pool) by adding `current_ship_leopard` to the
+   requirements. Scope matters: company-scope events take it in the top-level
+   `ExclusionTags`; mechwarrior-scope events need a Company-scope
+   `AdditionalRequirements` entry, because their top-level block checks the
+   pilot's tags, not company tags.
+4. **Reword cosmetic mentions** ship-neutral ("the ship" instead of "the
+   Argo") where the event's premise is location-independent — such wording
+   stays correct on both ships.
+5. **Flashpoint chains**: put their IDs into `FlashpointIds` for placement,
+   empty their `LocationRequirements` (placement is this mod's job — vanilla
+   still filters by them), and audit their forced events the same way. Note
+   that mods porting the story campaign usually presume the player already
+   owns the Argo — gate such chains behind `current_ship_argo` at or before
+   their first Argo reference.
+
+Engine limitation to keep in mind: the ship name cannot be a variable, so
+events that can only fire post-Argo may keep their "Argo" wording verbatim —
+it is correct there.
+
 ## Known issues
 
-None currently. The two historical ones are resolved and documented in the
-roadmap: the flashpoint conversation glitch (fixed in v0.1.4) and Argo-flavored
-event texts (audit complete — gated, reworded, or verified self-gating across
-BTVL Vanilla Events, BT Advanced Events and the other event mods; the ship name
-itself cannot be an engine variable, so a few cosmetic "Argo" mentions remain
-only in events that fire post-Argo anyway).
+None currently. The historical ones are resolved: the flashpoint conversation
+glitch (see roadmap) and Argo-flavored event texts (audit approach documented
+above; the ship name cannot be an engine variable, so a few cosmetic "Argo"
+mentions remain only in events that fire post-Argo anyway).
 
 ## Roadmap
 
 ### v0.1 — release
 - [x] Core patch: start ship + mutually exclusive `current_ship_*` tags
-- [x] Verify engineering is natively closed on the Leopard (code audit + field
-      check done)
-- [x] Integrate the transition: dogfisc's flashpoint chain added to the pack
-      as "Flashpoint - Recover The Argo"; retuned difficulty 2/4/5, lance
-      requests rewritten to pack vocabulary (the `dynamic_difficulty` tags had
-      zero matches in the lance pool), `LocationRequirements` emptied
-      (placement is this mod's job), dead `Repeatable` field dropped
-- [x] Flashpoint placement: flashpoints listed in `FlashpointIds` spawn on the
-      eligible system nearest to the player — never the player's current
-      system — instead of a random eligible system from the whole map.
-      Implemented as a prefix on the `Flashpoint` constructor (the first point
-      where the def is chosen while the system is still swappable); eligibility
-      reuses the def's `LocationRequirements` plus the no-two-flashpoints-per-
-      system rule. Field-verified on game 1.9.1
-- [x] Tag sync on external ship switches: postfix on `SetSimShip` so that any
-      `System_SetDropship` action (the FPs use it) keeps `current_ship_*`
-      consistent — without this the tags go stale after the FP chain
-- [ ] Field test, remaining: TA1 combat (lance composition, difficulty feel);
-      Axylus finale → Argo transition; save/load round-trip after the
-      transition. Verified so far: Leopard start + tags, engineering
-      unreachable, flashpoint placement, conversation-exit fix
-- [x] Flashpoint conversation glitch: fixed in v0.1.4 and field-verified.
-      Three layers, all Leopard-only: (1) the CONFERENCE room (128) is not in
-      the Leopard's room mask (DS_LEOPARD = 119) — entering it broke the
-      scene (planet graphics over rooms); conversation entry is now
-      redirected to the Command Center via RoomManager.ChangeRoom +
-      CameraController.SetScene (ChangeRoom alone does not move the camera);
-      (2) conversation exits (raw Conference, Ship/Argo set by
-      ExtendedConversations for invalid/circular locations, or vanilla's
-      INVALID_UNSET fallback) all landed on the SHIP exterior view — now
-      redirected to the Command Center (Contract menu); (3) speaker-focus
-      camera moves during conversations ("Couldn't find the room!" spam —
-      the cast's camera anchors only exist in the Argo conference set) are
-      skipped entirely. Argo behavior untouched
-
-### v0.2 — content
-- [x] Event audit (BTVL Vanilla Events, direct edits): 27 events from the
-      2020 mod's blocklist excluded on the Leopard via `current_ship_leopard`
-      (company-scope events: top-level ExclusionTags; mechwarrior-scope:
-      a Company-scope AdditionalRequirements entry — the MW block checks pilot
-      tags, not company tags); 7 events self-gate on ship-upgrade
-      requirements; 6 events reworded to ship-neutral texts ("the ship"
-      instead of "the Argo" — stays correct on both ships); 6 events clean
-      (Argo only mentioned inside upgrade-gated, hidden options)
-- [x] MRB / black market chain (BT Advanced Events): the chain ENTRY event
-      `event_sh_gate1` is gated with `current_ship_leopard` — the epsilon
-      authorization (and the black market access it grants) cannot start while
-      on the Leopard. The later `event_sh_gate1_assessment` keeps its original
-      Argo-referencing texts: it can only fire once the chain has started,
-      which is already post-Argo, so the texts are correct
-- [x] Starting MechTech/MedTech counts — decided: keep vanilla (Argo-baseline)
-      constants; the Leopard plays as a "cut-down Argo" stat-wise
-- [x] Arano Restoration chain (Flashpoint mod): `fp_StoryTime3` (Axylus /
-      "Capture the Scheria") gated behind `current_ship_argo`; the two d2
-      intro missions stay open from career start. The career port presumes the
-      player already owns the Argo — the Axylus briefing itself says the
-      *Scheria* is "a derelict similar to your Argo", and every later event
-      casually references the Argo as the player's ship. StoryTime3 is exactly
-      where those references begin, so the chain runs on the Leopard up to that
-      point at appropriate difficulty and pauses until the Argo is secured
+- [x] Engineering natively closed on the Leopard (code audit + field check)
+- [x] Tag sync on external ship switches (see How it works)
+- [x] Flashpoint placement via `FlashpointIds` — a prefix on the `Flashpoint`
+      constructor (the first point where the def is chosen while the system is
+      still swappable); eligibility reuses the def's `LocationRequirements`
+      plus the no-two-flashpoints-per-system rule; the player's current system
+      is never chosen. Field-verified
+- [x] Flashpoint conversation glitch: fixed and field-verified. Three layers,
+      all Leopard-only: (1) the CONFERENCE room is not in the Leopard's room
+      mask — entering it broke the scene (planet graphics over rooms);
+      conversation entry is redirected to the Command Center via
+      `RoomManager.ChangeRoom` + `CameraController.SetScene` (ChangeRoom alone
+      does not move the camera); (2) conversation exits (a raw circular
+      `Conference`, `Ship`/`Argo` as substituted by ExtendedConversations for
+      invalid locations, or vanilla's `INVALID_UNSET` fallback) all landed on
+      the SHIP exterior view — now redirected to the Command Center; (3)
+      speaker-focus camera moves during conversations (the cast's camera
+      anchors only exist in the Argo conference set) are skipped. Argo
+      behavior untouched
+- [ ] Field test, remaining: chain combat (lance composition, difficulty
+      feel); chain finale → Argo transition; save/load round-trip after the
+      transition
 
 ### Backlog
 - [ ] Union dropship support (`current_ship_union`; shares Argo visuals)
-- [ ] Farah flyout room-change patch if the field test shows it looks broken
+- [ ] IRTweaks fixes: the CMD Staff flyout routing bug above (queue branch
+      needs a ChangeRoom call); and if instant room transitions are ever
+      enabled, the Farah flyout would force the off-mask Engineering room on
+      the Leopard and needs a guard
 
 ## License
 
