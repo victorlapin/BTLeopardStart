@@ -39,6 +39,7 @@ namespace BTLeopardStart.Patches
             var origin = state.CurSystem;
             if (origin == null)
             {
+                Core.LogWarning("FP placement: CurSystem is null, keeping vanilla pick");
                 return;
             }
 
@@ -49,6 +50,10 @@ namespace BTLeopardStart.Patches
                 if (sys == null || sys == starSystem)
                 {
                     continue;
+                }
+                if (sys.ID == origin.ID)
+                {
+                    continue; // never in the player's current system — a jump away, not underfoot
                 }
                 if (state.AvailableFlashpoints.Any(fp => fp != null && fp.CurSystem != null && fp.CurSystem.ID == sys.ID))
                 {
@@ -68,6 +73,7 @@ namespace BTLeopardStart.Patches
 
             if (best == null)
             {
+                Core.LogWarning($"FP placement: no eligible system for {def.Description.Id} (StarSystems={state.StarSystems?.Count ?? -1}), keeping vanilla pick {starSystem.ID}");
                 return; // no eligible system (should not happen) — keep the vanilla pick
             }
 
