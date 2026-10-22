@@ -5,7 +5,7 @@
   "Version": "0.1.4",
   "Description": "Career mode starts on a Leopard dropship; the Argo is earned through play.",
   "Author": "Victor Lapin",
-  "Website": "",
+  "Website": "https://github.com/victorlapin/BTLeopardStart",
   "DLL": "BTLeopardStart.dll",
   "DLLEntryPoint": "BTLeopardStart.Core.Init",
   "Manifest": []
