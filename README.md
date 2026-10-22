@@ -31,7 +31,8 @@ mod rides on native mechanics:
 
 The Argo transition itself is **not part of this mod** — pair it with any
 content that calls the native `System_SetDropship` action (for example the
-three-flashpoint recovery chain from dogfisc's 2020 "Career Leopard Start").
+three-flashpoint recovery chain from
+[Career Leopard Start](https://www.nexusmods.com/battletech/mods/518)).
 While a chain's flashpoint IDs are listed in `FlashpointIds`, this mod places
 each of them in the eligible system **nearest to the player** — vanilla picks
 a random eligible system from the whole map with no distance filter, which on
@@ -146,6 +147,13 @@ mentions remain only in events that fire post-Argo anyway).
       needs a ChangeRoom call); and if instant room transitions are ever
       enabled, the Farah flyout would force the off-mask Engineering room on
       the Leopard and needs a guard
+
+## Acknowledgments
+
+- [Career Leopard Start](https://www.nexusmods.com/battletech/mods/518) by
+  dogfisc (2020) — the original Leopard-start mod this project used as its
+  reference: the feasibility proof, the Argo-recovery flashpoint chain used as
+  the transition, and the event blocklist that seeded the event audit.
 
 ## License
 
