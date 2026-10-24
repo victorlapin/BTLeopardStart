@@ -29,15 +29,18 @@ mod rides on native mechanics:
    untouched; their Argo-flavored texts are only ever shown on the Argo, where
    they are correct.
 
-The Argo transition itself is **not part of this mod** — pair it with any
-content that calls the native `System_SetDropship` action (for example the
-three-flashpoint recovery chain from
-[Career Leopard Start](https://www.nexusmods.com/battletech/mods/518)).
-While a chain's flashpoint IDs are listed in `FlashpointIds`, this mod places
-each of them in the eligible system **nearest to the player** — vanilla picks
+**Earning the Argo is built in**: while on the Leopard, a recurring event
+offers a stripped old Explorer-class hull for sale (¢2,000,000 — the option
+is hidden while funds are short; declining costs nothing and the offer
+returns). Buying it calls the native `System_SetDropship` action — the tag
+sync switches the ship, and engineering/upgrades open on the Argo. Any other
+content that switches the ship through the same native action works too.
+
+`FlashpointIds` (optional): flashpoints listed there are placed in the
+eligible system **nearest to the player** when they generate — vanilla picks
 a random eligible system from the whole map with no distance filter, which on
-large community maps (thousands of systems) can spawn the chain dozens of
-jumps away. No timers, no scripted purchase.
+large community maps (thousands of systems) can spawn content dozens of jumps
+away.
 
 Compatibility with **IRTweaks** `StreamlinedMainMenu`: its left-nav rework
 posts after vanilla gating (does not reactivate hidden buttons) and its new
@@ -64,10 +67,8 @@ into the entry-point settings, so the mod reads the file itself).
   "StartShip": "Leopard",      // "Leopard" or "Argo" (Argo = vanilla behavior)
   "ShipTagPrefix": "current_ship",
   "FlashpointIds": [           // flashpoints placed in the system NEAREST to
-    "fp_TA1_DiggingintheDirt", // the player (never the current system) when
-    "fp_TA2_ResearchAssistant",// they generate; empty = vanilla placement
-    "fp_TA3_RecovertheArgo"    // (random eligible system map-wide)
-  ]
+    "fp_ExampleChain1"         // the player (never the current system); empty
+  ]                            // = vanilla placement (random system map-wide)
 }
 ```
 
@@ -152,8 +153,9 @@ mentions remain only in events that fire post-Argo anyway).
 
 - [Career Leopard Start](https://www.nexusmods.com/battletech/mods/518) by
   dogfisc (2020) — the original Leopard-start mod this project used as its
-  reference: the feasibility proof, the Argo-recovery flashpoint chain used as
-  the transition, and the event blocklist that seeded the event audit.
+  reference: the feasibility proof, the Argo-recovery flashpoint chain that
+  served as the transition until v0.2, and the event blocklist that seeded
+  the event audit.
 
 ## License
 
