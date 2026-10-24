@@ -2,11 +2,11 @@
   "Description": {
     "Id": "event_argo_bought",
     "Name": "A Ship of Our Own",
-    "Details": "Yang waves you over with a datapad full of lien certificates and a grin he can't quite suppress. 'Boss, you know I've been haunting the breaker yards since spring. Well — Perifax Salvage is liquidating, and they've got an old Explorer-class hull on the ledger. Stripped to the ribs and cold as a tomb, but the frame is true and the price... the price is a steal. ¢2,000,000 and she's ours.' Darius whistles quietly at the tonnage figures. 'An office with actual doors, Commander.'",
+    "Details": "Yang waves you over with a datapad full of lien certificates and a grin he can't quite suppress. 'Boss, you know I've been haunting the breaker yards since spring. Well — Perifax Salvage is liquidating, and they've got an old Explorer-class hull on the ledger. Stripped to the ribs and cold as a tomb, but the frame is true and the price... the price is a steal. ¢2,000,000 and she's ours.'\n\nDarius whistles quietly at the tonnage figures. 'An office with actual doors, Commander.'",
     "Icon": "uixTxrSpot_ArgoStructure0"
   },
   "Scope": "Company",
-  "Weight": 1500,
+  "Weight": 1000,
   "Requirements": {
     "Scope": "Company",
     "RequirementTags": {
@@ -28,7 +28,7 @@
     {
       "Description": {
         "Id": "Pass",
-        "Name": "Pass on the opportunity for now",
+        "Name": "Pass on the opportunity for now.",
         "Details": "The breaker's yard isn't going anywhere — and neither is that hull. Hopefully.",
         "Icon": ""
       },
@@ -67,7 +67,7 @@
     {
       "Description": {
         "Id": "Buy",
-        "Name": "Buy the hull",
+        "Name": "Buy the hull.",
         "Details": "[¢2,000,000]",
         "Icon": ""
       },
@@ -97,7 +97,7 @@
           "Description": {
             "Id": "Bought",
             "Name": "A new chapter",
-            "Details": "The crew lines the Leopard's spine as the tugs ease the great hull alongside. She'll need months of work before she's pretty — but for the first time in company history, there is room to grow. Nobody calls her 'the salvage hull' after the first night — as far as the crew is concerned, the old girl already has a name: <i>Argo</i>.",
+            "Details": "The crew lines the Leopard's spine as the tugs ease the great hull alongside. She'll need months of work before she's pretty — but for the first time in company history, there is room to grow.\n\nNobody calls her 'the salvage hull' after the first night — as far as the crew is concerned, the old girl already has a name: <i>Argo</i>.",
             "Icon": ""
           },
           "Weight": 100,
