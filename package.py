@@ -52,6 +52,8 @@ def main() -> None:
     with zipfile.ZipFile(zip_path, "w", zipfile.ZIP_DEFLATED) as zf:
         # the zip contains the mod folder itself, so it extracts into Mods/
         zf.write(ROOT / "mod.json", f"{MOD}/mod.json")
+        for f in sorted((ROOT / "events").glob("*.json")):
+            zf.write(f, f"{MOD}/events/{f.name}")
         zf.write(DLL, f"{MOD}/{MOD}.dll")
         zf.write(ROOT / "settings.json", f"{MOD}/settings.json")
         zf.write(ROOT / "README.md", f"{MOD}/README.md")

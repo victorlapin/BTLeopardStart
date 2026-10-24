@@ -8,5 +8,10 @@
   "Website": "https://github.com/victorlapin/BTLeopardStart",
   "DLL": "BTLeopardStart.dll",
   "DLLEntryPoint": "BTLeopardStart.Core.Init",
-  "Manifest": []
+  "Manifest": [
+    {
+      "Type": "SimGameEventDef",
+      "Path": "events"
+    }
+  ]
 }

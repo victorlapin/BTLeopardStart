@@ -1,0 +1,149 @@
+{
+  "Description": {
+    "Id": "event_argo_bought",
+    "Name": "A Ship of Our Own",
+    "Details": "Yang waves you over with a datapad full of lien certificates and a grin he can't quite suppress. 'Boss, you know I've been haunting the breaker yards since spring. Well — Perifax Salvage is liquidating, and they've got an old Explorer-class hull on the ledger. Stripped to the ribs and cold as a tomb, but the frame is true and the price... the price is a steal. ¢2,000,000 and she's ours.' Darius whistles quietly at the tonnage figures. 'An office with actual doors, Commander.'",
+    "Icon": "uixTxrSpot_ArgoStructure0"
+  },
+  "Scope": "Company",
+  "Weight": 1500,
+  "Requirements": {
+    "Scope": "Company",
+    "RequirementTags": {
+      "items": [
+        "current_ship_leopard"
+      ],
+      "tagSetSourceFile": "Tags/CompanyTags"
+    },
+    "ExclusionTags": {
+      "items": [
+        "current_ship_argo"
+      ],
+      "tagSetSourceFile": "Tags/CompanyTags"
+    },
+    "RequirementComparisons": []
+  },
+  "AdditionalRequirements": [],
+  "Options": [
+    {
+      "Description": {
+        "Id": "Pass",
+        "Name": "Pass on the opportunity for now",
+        "Details": "The breaker's yard isn't going anywhere — and neither is that hull. Hopefully.",
+        "Icon": ""
+      },
+      "RequirementList": [],
+      "ResultSets": [
+        {
+          "Description": {
+            "Id": "Passed",
+            "Name": "Another day",
+            "Details": "Yang shoulders the datapad with a shrug. 'I'll keep the line warm, boss. But scrap prices being what they are... don't take too long.'",
+            "Icon": ""
+          },
+          "Weight": 100,
+          "Results": [
+            {
+              "Scope": "Company",
+              "Requirements": null,
+              "AddedTags": {
+                "tagSetSourceFile": "Tags/CompanyTags",
+                "items": []
+              },
+              "RemovedTags": {
+                "tagSetSourceFile": "Tags/CompanyTags",
+                "items": []
+              },
+              "Stats": [],
+              "Actions": null,
+              "ForceEvents": null,
+              "TemporaryResult": false,
+              "ResultDuration": 0
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "Description": {
+        "Id": "Buy",
+        "Name": "Buy the hull",
+        "Details": "[¢2,000,000]",
+        "Icon": ""
+      },
+      "RequirementList": [
+        {
+          "Scope": "Company",
+          "RequirementTags": {
+            "items": [],
+            "tagSetSourceFile": ""
+          },
+          "ExclusionTags": {
+            "items": [],
+            "tagSetSourceFile": ""
+          },
+          "RequirementComparisons": [
+            {
+              "obj": "Funds",
+              "op": "GreaterThan",
+              "val": 2000000,
+              "valueConstant": "2000000"
+            }
+          ]
+        }
+      ],
+      "ResultSets": [
+        {
+          "Description": {
+            "Id": "Bought",
+            "Name": "A new chapter",
+            "Details": "The crew lines the Leopard's spine as the tugs ease the great hull alongside. She'll need months of work before she's pretty — but for the first time in company history, there is room to grow. Nobody calls her 'the salvage hull' after the first night — as far as the crew is concerned, the old girl already has a name: <i>Argo</i>.",
+            "Icon": ""
+          },
+          "Weight": 100,
+          "Results": [
+            {
+              "Scope": "Company",
+              "Requirements": null,
+              "AddedTags": {
+                "tagSetSourceFile": "Tags/CompanyTags",
+                "items": []
+              },
+              "RemovedTags": {
+                "tagSetSourceFile": "Tags/CompanyTags",
+                "items": []
+              },
+              "Stats": [
+                {
+                  "typeString": "System.Int32",
+                  "name": "Funds",
+                  "value": "-2000000",
+                  "set": false
+                }
+              ],
+              "Actions": [
+                {
+                  "Type": "System_SetDropship",
+                  "value": "argo",
+                  "additionalValues": [
+                    "",
+                    "",
+                    "event_argo_bought",
+                    "",
+                    ""
+                  ]
+                }
+              ],
+              "ForceEvents": null,
+              "TemporaryResult": false,
+              "ResultDuration": 0
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "PublishState": "PUBLISHED",
+  "EventType": "NORMAL",
+  "OneTimeEvent": false
+}

@@ -46,11 +46,13 @@
     <ItemGroup>
       <ModManifest Include="$(MSBuildProjectDirectory)\mod.json" />
       <ModSettings Include="$(MSBuildProjectDirectory)\settings.json" />
+      <ModEvents Include="$(MSBuildProjectDirectory)\events\*.json" />
     </ItemGroup>
     <Copy SourceFiles="$(TargetPath)" DestinationFolder="$(DeployDir)" />
     <Copy SourceFiles="@(ModManifest)" DestinationFolder="$(DeployDir)" />
     <Copy SourceFiles="@(ModSettings)" DestinationFolder="$(DeployDir)"
           Condition="!Exists('$(DeployDir)\settings.json')" />
+    <Copy SourceFiles="@(ModEvents)" DestinationFiles="@(ModEvents->'$(DeployDir)\events\%(Filename)%(Extension)')" />
     <Message Importance="high" Text="Deployed $(TargetFileName) + data to $(DeployDir)" />
   </Target>
 
