@@ -21,7 +21,14 @@
       ],
       "tagSetSourceFile": "Tags/CompanyTags"
     },
-    "RequirementComparisons": []
+    "RequirementComparisons": [
+      {
+        "obj": "MissionsComplete",
+        "op": "GreaterThan",
+        "val": 10,
+        "valueConstant": "10"
+      }
+    ]
   },
   "AdditionalRequirements": [],
   "Options": [
