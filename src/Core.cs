@@ -6,7 +6,7 @@ using HarmonyLib;
 using HBS.Logging;
 using Newtonsoft.Json;
 
-[assembly: AssemblyVersion("0.2.0")]
+[assembly: AssemblyVersion("0.2.1")]
 
 namespace BTLeopardStart
 {
@@ -60,7 +60,9 @@ namespace BTLeopardStart
 
     public class Settings
     {
-        /// <summary>"Leopard", "Union", or "Argo" — the ship the career starts on.</summary>
+        /// <summary>"Leopard", "Union", or "Argo" — the ship the career starts on.
+        /// Overridden by a "StartingDropship" choice in the career difficulty
+        /// screen when the pack provides one (see README).</summary>
         public string StartShip = "Leopard";
 
         /// <summary>Tag prefix for the current-ship state. Tags are mutually exclusive:

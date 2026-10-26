@@ -72,6 +72,10 @@ into the entry-point settings, so the mod reads the file itself).
 }
 ```
 
+`StartShip` is only the **default**: a pack may expose a per-career choice in
+the career setup screen (see below), and that selection wins for the career
+being created.
+
 ## Integrating into a modpack
 
 The `current_ship_*` company tags are a public integration surface — and there
@@ -108,6 +112,69 @@ Engine limitation to keep in mind: the ship name cannot be a variable, so
 events that can only fire post-Argo may keep their "Argo" wording verbatim —
 it is correct there.
 
+### Offering the choice in the career setup screen
+
+Instead of fixing the ship in `settings.json`, a pack can let each new career
+choose its ship right in the career difficulty screen. Add a setting to
+`StreamingAssets/data/constants/CareerDifficultySettings.json`:
+
+```json
+{
+  "ID": "diff_startingShip",
+  "Name": "Starting Dropship",
+  "TelemetryEventName": "",
+  "UIOrder": 26,
+  "Tooltip": "Select the DropShip your company starts on.",
+  "Enabled": true,
+  "Visible": true,
+  "Toggle": false,
+  "StartOnly": true,
+  "DefaultIndex": 0,
+  "Options": [
+    {
+      "ID": "diff_ship_leopard",
+      "Name": "Leopard",
+      "TelemetryEventDesc": "",
+      "DifficultyValue": 0,
+      "CareerScoreModifier": 0,
+      "DifficultyConstants": [
+        {
+          "ConstantType": "string",
+          "ConstantName": "StartingDropship",
+          "ConstantValue": "leopard"
+        }
+      ]
+    },
+    {
+      "ID": "diff_ship_argo",
+      "Name": "Argo",
+      "TelemetryEventDesc": "",
+      "DifficultyValue": 0,
+      "CareerScoreModifier": 0,
+      "DifficultyConstants": [
+        {
+          "ConstantType": "string",
+          "ConstantName": "StartingDropship",
+          "ConstantValue": "argo"
+        }
+      ]
+    }
+  ]
+}
+```
+
+The game parks the selected option's `DifficultyConstants` in
+`SimGameState.ConstantOverrides` and saves them with the career, so the
+choice survives save/load natively. On a fresh career this mod reads
+`StartingDropship` from there: `leopard` runs the ship switch, `argo` leaves
+the vanilla Argo start (and the built-in purchase event correctly never
+fires). Any other value — or no entry at all — falls back to the mod's
+`StartShip` setting, so standalone installs keep working unchanged.
+
+`ConstantType: "string"` is deliberate: it matches no real `SimGameConstants`
+section, so the value is pure data for this mod (the same trick vanilla-style
+difficulty lists use for their non-constant toggles).
+
 ## Known issues
 
 None currently. The historical ones are resolved: the flashpoint conversation
@@ -138,9 +205,11 @@ mentions remain only in events that fire post-Argo anyway).
       speaker-focus camera moves during conversations (the cast's camera
       anchors only exist in the Argo conference set) are skipped. Argo
       behavior untouched
-- [ ] Field test, remaining: chain combat (lance composition, difficulty
-      feel); chain finale → Argo transition; save/load round-trip after the
-      transition
+
+### v0.2.1
+- [x] Career-setup ship choice: packs can expose a "Starting Dropship" row in
+      the career difficulty screen (see *Integrating into a modpack*); the
+      selection overrides `StartShip` for that career
 
 ### Backlog
 - [ ] Union dropship support (`current_ship_union`; shares Argo visuals)
