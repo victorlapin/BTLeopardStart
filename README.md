@@ -32,7 +32,10 @@ mod rides on native mechanics:
 **Earning the Argo is built in**: while on the Leopard, a recurring event
 offers a stripped old Explorer-class hull for sale (¢2,000,000 — the option
 is hidden while funds are short; declining costs nothing and the offer
-returns). Buying it calls the native `System_SetDropship` action — the tag
+returns). The offer starts once the company has won 8 missions and only
+comes up while **docked** — the event carries `MissionsComplete > 8` and
+`Travel == 0` comparisons, so a two-million-C-Bill deal is never pitched
+mid-jump. Buying it calls the native `System_SetDropship` action — the tag
 sync switches the ship, and engineering/upgrades open on the Argo. Any other
 content that switches the ship through the same native action works too.
 
@@ -210,6 +213,13 @@ mentions remain only in events that fire post-Argo anyway).
 - [x] Career-setup ship choice: packs can expose a "Starting Dropship" row in
       the career difficulty screen (see *Integrating into a modpack*); the
       selection overrides `StartShip` for that career
+
+### v0.2.2
+- [x] Argo purchase gate lowered to 8 won missions (was 10): repair throughput
+      without ship upgrades is a fixed clock, not player skill — ten missions of
+      Leopard-phase queue waiting dragged in the field
+- [x] The purchase offer now also requires the company to be docked
+      (`Travel == 0`) — never pitched mid-jump
 
 ### Backlog
 - [ ] Union dropship support (`current_ship_union`; shares Argo visuals)
