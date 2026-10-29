@@ -23,6 +23,12 @@
     },
     "RequirementComparisons": [
       {
+        "obj": "Travel",
+        "op": "Equal",
+        "val": 0,
+        "valueConstant": "0"
+      },
+      {
         "obj": "MissionsComplete",
         "op": "GreaterThan",
         "val": 8,
